@@ -35,6 +35,10 @@ public class HelloWorld {
         boolean decision = true;
         System.out.println(decision);
 
+
+        String name = "Mubashir";
+        System.out.println(name);
+
     }
 }
 
