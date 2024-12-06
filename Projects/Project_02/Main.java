@@ -8,8 +8,9 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         Add_Account_Holder add_Account_Holder = new Add_Account_Holder();
         File_Handling file_Handling = new File_Handling();
+        Debit_Credit debit_credit = new Debit_Credit();
 
-        // file_Handling.Erase_All_Data();        // Clears All Data Inside File.
+        //file_Handling.Erase_All_Data();        // Clears All Data Inside File.
 
         // add_Account_Holder.Take_No_Of_Entries(scanner);   // Takes Number Of enteries to let Loop Go on Without An Error.
         // Data [] data = new Data[Data.Entries];     // creates Data Class Array.
@@ -22,7 +23,9 @@ public class Main {
         // add_Account_Holder.Take_Input(data, scanner, file_Handling); // It takes Input of Data for Account Creation;
         // file_Handling.Write_On_File(data);   // It writes Data on file for storage;
 
-        // file_Handling.Get_Total_Amount_InBAnk(); // It checks the total amount in bank;
+        //file_Handling.Get_Total_Amount_InBAnk(); // It checks the total amount in bank;
+
+        //debit_credit.Debit(5000, 11202400005001l);        // Incompelete Code Cause Infinite loop
 
         scanner.close();
     }
@@ -89,6 +92,9 @@ class File_Handling {
                 writer.write("Contact is : " + String.valueOf(D[i].Contact) + "\n");
                 writer.write("Balance is : " + String.valueOf(D[i].Balance));
 
+                writer.newLine();
+                writer.newLine();
+                writer.newLine();
                 writer.newLine();
                 writer.newLine();
                 writer.newLine();
@@ -173,6 +179,85 @@ class File_Handling {
 
         System.out.println(Colors.G + "Total Amount In Bank Is : " + Data.Total_Balance + Colors.W);
 
+    }
+}
+
+// Under-Construction:
+
+class Debit_Credit {
+    public void Debit(long Amount, long Acc_num){
+        try(BufferedReader reader = new BufferedReader(new FileReader(Data.File_Name))){
+            String Line;
+            String Previous_Balance_info = null;
+            long Previous_Bal = 0;
+            String Account_Num = null;
+            long Match_Account_num = 0;
+            while((Line = reader.readLine()) != null){
+                if(Line.startsWith("Account Number is : ")){
+                    Account_Num = Line;
+                    String [] parts_Acc = Account_Num.split(":");
+                    Match_Account_num = Long.parseLong(parts_Acc[1].trim());
+                }
+                
+                if(Line.startsWith("Balance is : ")){
+                    if(Match_Account_num == Acc_num){
+                        Previous_Balance_info = Line;
+                        String [] Parts_Bal = Previous_Balance_info.split(":");
+                        Previous_Bal = Long.parseLong(Parts_Bal[1].trim());
+                    }
+
+                    System.out.println(Acc_num + " Previous Balance Was : " + Previous_Bal);
+
+                    Previous_Bal += Amount;
+
+                    System.out.println(Acc_num + " Current Balance is : " + Previous_Bal);
+
+                    
+                    try(BufferedWriter writer = new BufferedWriter(new FileWriter(Data.File_Name, true))){
+                        String Line_2;
+                        List<String> LinesList = new ArrayList<>();
+                        try(BufferedReader reader_2 = new BufferedReader(new FileReader(Data.File_Name))) {
+                            while((Line_2 = reader_2.readLine()) != null){
+                                LinesList.add(Line_2);
+                            }
+                        } catch (IOException e) {
+                            System.out.println(e.getMessage());
+                        }
+
+                        int lineNum = 0;
+
+                        for(int i = 0; i < LinesList.size(); i++){
+                            if(LinesList.get(i).contains(Account_Num)){
+                                lineNum = (i+1);
+                                break;
+                            }
+                        }
+
+                        if((lineNum + 3) < LinesList.size()){
+                            LinesList.set((lineNum + 3), "Balance is : " + Previous_Bal);
+                        }
+                        else{
+                            System.out.println("Out Of Bond Error");
+                        }
+
+                        for(String UpdateData: LinesList){
+                            writer.write(UpdateData);
+                            writer.newLine();
+                        }
+
+                    }
+                    catch(IOException e){
+                        System.out.println(e.getMessage());
+                    }
+                }
+
+                break;
+
+            }
+        }
+        catch(IOException e){
+            System.out.println(e.getMessage());
+        }
     }
 }
 
