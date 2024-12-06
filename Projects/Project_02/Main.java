@@ -10,7 +10,7 @@ public class Main {
         File_Handling file_Handling = new File_Handling();
         Debit_Credit debit_credit = new Debit_Credit();
 
-        //file_Handling.Erase_All_Data();        // Clears All Data Inside File.
+        file_Handling.Erase_All_Data();        // Clears All Data Inside File.
 
         // add_Account_Holder.Take_No_Of_Entries(scanner);   // Takes Number Of enteries to let Loop Go on Without An Error.
         // Data [] data = new Data[Data.Entries];     // creates Data Class Array.
@@ -46,7 +46,7 @@ class Data {
     public static long Total_Balance = 0;
 
     public static boolean Over_ride = true;
-    public static String File_Name = "Info.txt";
+    public static String File_Name = "file.txt";
 }
 
 
